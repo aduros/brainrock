@@ -1,0 +1,105 @@
+(Predefine some constants)
+ConstOpenBracket is 91
+ConstCloseBracket is 93
+ConstTwoFiftyFive is 255
+ConstZero is 0
+ConstOne is 1
+LET ConstNegativeOne be ConstZero minus ConstOne
+Rock ConstEmpty
+
+(The data tape pointer)
+ROCK Data
+LET DataPtr be ConstZero
+
+(The code string and instruction pointer)
+LISTEN to Code
+LET CodePtr be ConstZero
+
+(Buffer a line of input before it can be printed)
+(This could be LET LineBuffer be "", but that's not aesthetic pleasing)
+JOIN ConstEmpty into LineBuffer
+
+(Increments a number, simulating 8-bit overflow)
+FuncIncrementByte takes Number
+    IF Number is ConstTwoFiftyFive
+       return ConstZero
+
+    return Number plus ConstOne
+
+(Decrements a number, simulating 8-bit underflow)
+FuncDecrementByte takes Number
+    IF Number is ConstZero
+        return ConstTwoFiftyFive
+
+    return Number minus ConstOne
+
+(Returns whether the given character has the given ascii code)
+FuncCheckAscii takes Char and AsciiCode
+    CAST AsciiCode
+    return AsciiCode is Char
+
+(Scans forward or backward by the given delta to the next matching bracket)
+FuncScan takes Delta
+    PUT Delta into Balance
+    WHILE Balance
+        LET CodePtr be CodePtr plus Delta
+        LET Instruction be Code at CodePtr
+        IF FuncCheckAscii taking Instruction, ConstOpenBracket
+            BUILD Balance UP
+
+        IF FuncCheckAscii taking Instruction, ConstCloseBracket
+            KNOCK Balance DOWN
+
+
+
+(The big evaluation loop)
+UNTIL nothing
+    LET Instruction be Code at CodePtr
+    IF Instruction ain't true
+        BREAK
+
+    LET Value be Data at DataPtr
+    IF Value is nothing
+        LET Value be ConstZero
+
+    IF FuncCheckAscii taking Instruction, ConstOpenBracket and Value is ConstZero
+        FuncScan taking ConstOne
+        CONTINUE
+
+    IF FuncCheckAscii taking Instruction, ConstCloseBracket and Value
+        FuncScan taking ConstNegativeOne
+        CONTINUE
+
+    ConstLeft is 60
+    IF FuncCheckAscii taking Instruction, ConstLeft
+        KNOCK DataPtr DOWN
+        
+    ConstRight is 62
+    IF FuncCheckAscii taking Instruction, ConstRight
+        BUILD DataPtr UP
+
+    ConstPlus is 43
+    IF FuncCheckAscii taking Instruction, ConstPlus
+        LET Data at DataPtr be FuncIncrementByte taking Value
+
+    ConstMinus is 45
+    IF FuncCheckAscii taking Instruction, ConstMinus
+        LET Data at DataPtr be FuncDecrementByte taking Value
+
+    ConstPeriod is 46
+    IF FuncCheckAscii taking Instruction, ConstPeriod
+        ConstTen is 10
+        IF Value is ConstTen
+            SHOUT LineBuffer
+            JOIN ConstEmpty into LineBuffer
+
+        IF Value ain't ConstTen
+            CAST Value (to string)
+            LET LineBuffer be LineBuffer plus Value
+
+
+    BUILD CodePtr UP
+
+(Print any remaining characters in the line buffer)
+IF LineBuffer
+    SHOUT LineBuffer

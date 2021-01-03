@@ -1,0 +1,79 @@
+CheckSymbol takes Char and AsciiCode
+    CAST AsciiCode
+    LET Result be it is Char
+    GIVE it BACK
+
+
+SymbolPlus is 43
+CAST SymbolPlus
+
+SymbolMinus is 45
+CAST SymbolMinus
+
+SymbolLeft is 60
+CAST SymbolLeft
+
+SymbolRight is 62
+CAST SymbolRight
+
+SymbolPeriod is 46
+CAST SymbolPeriod
+
+SymbolOpenBracket is 91
+CAST SymbolOpenBracket
+
+SymbolCloseBracket is 93
+CAST SymbolCloseBracket
+
+LISTEN to Code
+CodePtr IS 0
+
+SHOUT "ROCK Output"
+SHOUT "ROCK Data"
+SHOUT "DataPtr is 0"
+
+SHOUT "UNTIL DataPtr is 30000"
+SHOUT "LET Data at DataPtr be 0"
+SHOUT "BUILD DataPtr UP"
+SHOUT ""
+SHOUT "LET DataPtr be 0"
+
+UNTIL nothing
+    LET Instruction be Code at CodePtr
+    BUILD CodePtr UP
+    IF Instruction is nothing
+        BREAK IT DOWN
+
+    IF CheckSymbol taking Instruction, SymbolLeft
+        SHOUT "X"
+
+    IF Instruction is SymbolLeft
+        SHOUT "KNOCK DataPtr DOWN"
+        
+    IF Instruction is SymbolRight
+        SHOUT "BUILD DataPtr UP"
+
+    IF Instruction is SymbolPlus
+        SHOUT "LET Value be Data at DataPtr"
+        SHOUT "BUILD it UP"
+        SHOUT "LET Data at DataPtr be it"
+
+    IF Instruction is SymbolMinus
+        SHOUT "LET Value be Data at DataPtr"
+        SHOUT "KNOCK it DOWN"
+        SHOUT "LET Data at DataPtr be it"
+
+    IF Instruction is SymbolPeriod
+        SHOUT "LET Value be Data at DataPtr"
+        SHOUT "CAST it (to string)"
+        SHOUT "ROCK Output with it"
+
+    IF Instruction is SymbolOpenBracket
+        SHOUT "WHILE Data at DataPtr"
+
+    IF Instruction is SymbolCloseBracket
+        SHOUT ""
+
+
+SHOUT "JOIN Output"
+SHOUT "SHOUT Output"

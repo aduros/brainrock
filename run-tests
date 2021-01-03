@@ -1,0 +1,18 @@
+#!/bin/sh -e
+
+generated=`mktemp --suffix .rock`
+echo "Generated source: $generated"
+
+for bf in tests/*.bf; do
+    echo "Testing $bf"
+
+    # ./rockstar.js interpreter-debug.rock < "$bf"  | diff - "$bf.out"
+    ./rockstar.js interpreter.rock < "$bf"  | diff - "$bf.out"
+
+    # echo "$trimmed" | rockstar compiler-debug.rock > "$generated"
+    # rockstar "$generated" | diff - "$bf.out"
+done
+
+rm "$generated"
+
+echo "All tests passed!"
